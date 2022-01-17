@@ -1,16 +1,29 @@
-# breezly
+# Breezly
+A simple weather application build via flutter.
 
-A new Flutter project.
+##
 
-## Getting Started
+To run:
 
-This project is a starting point for a Flutter application.
+1. Ensure you have installed Flutter 2.8
+2. Open project via IDE of choice
+3. Run command "flutter pub get" & "flutter run"
 
-A few resources to get you started if this is your first Flutter project:
+##
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Usage
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The app fetch weather data from openweatherapp.org
+
+1. User can select which cities to choose from, and it will display weather data for the location + 5 day forecast
+2. User can select to save up to 5 (minimum 3) cities so it will always display on the app.
+
+Screenshots
+
+<p>
+<img src="/screenshots/home.png" alt="Breezly" width="200">
+<img src="/screenshots/home_two.png" alt="Breezly" width="200">
+<img src="/screenshots/dropdown.png" alt="Breezly" width="200">
+<img src="/screenshots/dropdown_location.png" alt="Breezly" width="200"></tr>
+ 
+</p>
