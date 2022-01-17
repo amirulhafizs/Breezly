@@ -20,4 +20,5 @@ The app fetch weather data from openweatherapp.org
 
 Screenshots
 
-<img src="./screenshot/home.png" alt="Breezly">
+<img src="/screenshot/home.png" alt="Breezly, width="200">
+ 
