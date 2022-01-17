@@ -9,6 +9,10 @@ import 'package:breezly/helpers/service_locator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+
+//Replace your api key here:
+const String apiKey = '-----INSERT API KEY-----';
+
 Future<void> main() async {
   // Setting up Get IT DI
   setup();
