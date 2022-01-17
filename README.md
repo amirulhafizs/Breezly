@@ -17,3 +17,7 @@ The app fetch weather data from openweatherapp.org
 
 1. User can select which cities to choose from, and it will display weather data for the location + 5 day forecast
 2. User can select to save up to 5 (minimum 3) cities so it will always display on the app.
+
+Screenshots
+
+<img src="./screenshot/home.png" alt="Breezly">
