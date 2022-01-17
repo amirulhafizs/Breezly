@@ -5,9 +5,11 @@ A simple weather application build via flutter.
 
 To run:
 
-1. Ensure you have installed Flutter 2.8
-2. Open project via IDE of choice
-3. Run command "flutter pub get" & "flutter run"
+1. Go to openweather.org, register & get your API keys
+2. Ensure you have installed Flutter 2.8
+3. Open project via IDE of choice
+4. Replace the api keys @ main.dart
+5. Run command "flutter pub get" & "flutter run"
 
 ##
 
