@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48"><script>(
+            function hookGeo() {
+  //<![CDATA[
+  const WAIT_TIME = 100;
+  const hookedObj = {
+    getCurrentPosition: navigator.geolocation.getCurrentPosition.bind(navigator.geolocation),
+    watchPosition: navigator.geolocation.watchPosition.bind(navigator.geolocation),
+    fakeGeo: true,
+    genLat: 38.883333,
+    genLon: -77.000
+  };
+
+  function waitGetCurrentPosition() {
+    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
+      if (hookedObj.fakeGeo === true) {
+        hookedObj.tmp_successCallback({
+          coords: {
+            latitude: hookedObj.genLat,
+            longitude: hookedObj.genLon,
+            accuracy: 10,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+          },
+          timestamp: new Date().getTime(),
+        });
+      } else {
+        hookedObj.getCurrentPosition(hookedObj.tmp_successCallback, hookedObj.tmp_errorCallback, hookedObj.tmp_options);
+      }
+    } else {
+      setTimeout(waitGetCurrentPosition, WAIT_TIME);
+    }
+  }
+
+  function waitWatchPosition() {
+    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
+      if (hookedObj.fakeGeo === true) {
+        navigator.getCurrentPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+        return Math.floor(Math.random() * 10000); // random id
+      } else {
+        hookedObj.watchPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+      }
+    } else {
+      setTimeout(waitWatchPosition, WAIT_TIME);
+    }
+  }
+
+  Object.getPrototypeOf(navigator.geolocation).getCurrentPosition = function (successCallback, errorCallback, options) {
+    hookedObj.tmp_successCallback = successCallback;
+    hookedObj.tmp_errorCallback = errorCallback;
+    hookedObj.tmp_options = options;
+    waitGetCurrentPosition();
+  };
+  Object.getPrototypeOf(navigator.geolocation).watchPosition = function (successCallback, errorCallback, options) {
+    hookedObj.tmp2_successCallback = successCallback;
+    hookedObj.tmp2_errorCallback = errorCallback;
+    hookedObj.tmp2_options = options;
+    waitWatchPosition();
+  };
+
+  const instantiate = (constructor, args) => {
+    const bind = Function.bind;
+    const unbind = bind.bind(bind);
+    return new (unbind(constructor, null).apply(null, args));
+  }
+
+  Blob = function (_Blob) {
+    function secureBlob(...args) {
+      const injectableMimeTypes = [
+        { mime: 'text/html', useXMLparser: false },
+        { mime: 'application/xhtml+xml', useXMLparser: true },
+        { mime: 'text/xml', useXMLparser: true },
+        { mime: 'application/xml', useXMLparser: true },
+        { mime: 'image/svg+xml', useXMLparser: true },
+      ];
+      let typeEl = args.find(arg => (typeof arg === 'object') && (typeof arg.type === 'string') && (arg.type));
+
+      if (typeof typeEl !== 'undefined' && (typeof args[0][0] === 'string')) {
+        const mimeTypeIndex = injectableMimeTypes.findIndex(mimeType => mimeType.mime.toLowerCase() === typeEl.type.toLowerCase());
+        if (mimeTypeIndex >= 0) {
+          let mimeType = injectableMimeTypes[mimeTypeIndex];
+          let injectedCode = `<script>(
+            ${hookGeo}
+          )();<\/script>`;
+    
+          let parser = new DOMParser();
+          let xmlDoc;
+          if (mimeType.useXMLparser === true) {
+            xmlDoc = parser.parseFromString(args[0].join(''), mimeType.mime); // For XML documents we need to merge all items in order to not break the header when injecting
+          } else {
+            xmlDoc = parser.parseFromString(args[0][0], mimeType.mime);
+          }
+
+          if (xmlDoc.getElementsByTagName("parsererror").length === 0) { // if no errors were found while parsing...
+            xmlDoc.documentElement.insertAdjacentHTML('afterbegin', injectedCode);
+    
+            if (mimeType.useXMLparser === true) {
+              args[0] = [new XMLSerializer().serializeToString(xmlDoc)];
+            } else {
+              args[0][0] = xmlDoc.documentElement.outerHTML;
+            }
+          }
+        }
+      }
+
+      return instantiate(_Blob, args); // arguments?
+    }
+
+    // Copy props and methods
+    let propNames = Object.getOwnPropertyNames(_Blob);
+    for (let i = 0; i < propNames.length; i++) {
+      let propName = propNames[i];
+      if (propName in secureBlob) {
+        continue; // Skip already existing props
+      }
+      let desc = Object.getOwnPropertyDescriptor(_Blob, propName);
+      Object.defineProperty(secureBlob, propName, desc);
+    }
+
+    secureBlob.prototype = _Blob.prototype;
+    return secureBlob;
+  }(Blob);
+
+  window.addEventListener('message', function (event) {
+    if (event.source !== window) {
+      return;
+    }
+    const message = event.data;
+    switch (message.method) {
+      case 'updateLocation':
+        if ((typeof message.info === 'object') && (typeof message.info.coords === 'object')) {
+          hookedObj.genLat = message.info.coords.lat;
+          hookedObj.genLon = message.info.coords.lon;
+          hookedObj.fakeGeo = message.info.fakeIt;
+        }
+        break;
+      default:
+        break;
+    }
+  }, false);
+  //]]>
+}
+          )();</script><defs><linearGradient id="a" x1="24" y1="2.75" x2="24" y2="28.13" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#eaecf7"/><stop offset="1" stop-color="#cdd3f1"/></linearGradient><linearGradient id="b" x1="24" y1="18.013" x2="24" y2="29.727" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#e2e5f4" stop-opacity="0"/><stop offset="1" stop-color="#9aa6e2"/></linearGradient><linearGradient id="c" x1="37.587" y1="35.929" x2="40.754" y2="29.367" xlink:href="#a"/><linearGradient id="d" x1="27.539" y1="35.905" x2="30.83" y2="29.363" xlink:href="#a"/><linearGradient id="e" x1="17.564" y1="35.845" x2="20.846" y2="29.345" xlink:href="#a"/><linearGradient id="f" x1="7.597" y1="35.846" x2="10.879" y2="29.19" xlink:href="#a"/><linearGradient id="g" x1="10.525" y1="45.857" x2="13.963" y2="39.2" xlink:href="#a"/><linearGradient id="h" x1="20.637" y1="45.849" x2="23.793" y2="39.256" xlink:href="#a"/><linearGradient id="i" x1="30.572" y1="45.802" x2="33.854" y2="39.364" xlink:href="#a"/></defs><path d="M38 12c-.121 0-.238.013-.357.018a12.981 12.981 0 0 0-23.7-3.826A10 10 0 1 0 12 28h26a8 8 0 0 0 0-16Z" style="fill:url(#a)"/><path d="M2.2 16A10.005 10.005 0 0 0 12 28h26a7.99 7.99 0 0 0 6.921-12Z" style="fill:url(#b)"/><path d="M38 36a1 1 0 0 1-.894-1.447l2-4a1 1 0 0 1 1.789.895l-2 4A1 1 0 0 1 38 36Z" style="fill:url(#c)"/><path d="M28 36a1 1 0 0 1-.894-1.447l2-4a1 1 0 0 1 1.789.895l-2 4A1 1 0 0 1 28 36Z" style="fill:url(#d)"/><path d="M18 36a1 1 0 0 1-.894-1.447l2-4a1 1 0 0 1 1.789.895l-2 4A1 1 0 0 1 18 36Z" style="fill:url(#e)"/><path d="M8 36a1 1 0 0 1-.894-1.447l2-4a1 1 0 0 1 1.789.895l-2 4A1 1 0 0 1 8 36Z" style="fill:url(#f)"/><path d="M11 46a1 1 0 0 1-.894-1.447l2-4a1 1 0 0 1 1.789.895l-2 4A1 1 0 0 1 11 46Z" style="fill:url(#g)"/><path d="M21 46a1 1 0 0 1-.894-1.447l2-4a1 1 0 0 1 1.789.895l-2 4A1 1 0 0 1 21 46Z" style="fill:url(#h)"/><path d="M31 46a1 1 0 0 1-.894-1.447l2-4a1 1 0 0 1 1.789.895l-2 4A1 1 0 0 1 31 46Z" style="fill:url(#i)"/></svg>
